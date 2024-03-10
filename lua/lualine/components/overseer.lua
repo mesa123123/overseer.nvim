@@ -62,8 +62,12 @@ local default_no_icons = {
 
 function M:init(options)
   M.super.init(self, options)
-
-  self.options.label = self.options.label or ""
+  if self.options.hide_label == true then
+    self.options.hidden_label = self.options.label
+    self.options.label = ""
+  else
+    self.options.label = self.options.label or ""
+  end
   if self.options.colored == nil then
     self.options.colored = true
   end
@@ -94,6 +98,10 @@ function M:update_status()
   local pieces = {}
   if self.options.label ~= "" then
     table.insert(pieces, self.options.label)
+  else
+    if self.options.hidden_label == true and #tasks > 0 then
+      table.insert(pieces, self.options.hidden_label)
+    end
   end
   for _, status in ipairs(STATUS.values) do
     local status_tasks = tasks_by_status[status]
